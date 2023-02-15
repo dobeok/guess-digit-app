@@ -7,8 +7,8 @@ from skimage.transform import resize
 import numpy as np
 
 
-model = tf.keras.models.load_model('./predict-model/results/keras_mnist_linear_stack.h5')
-
+# model = tf.keras.models.load_model('./predict-model/results/keras_mnist_linear_stack.h5')
+model = tf.keras.models.load_model('./predict-model/results/keras_mnist_cnn.h5')
 
 with st.sidebar:
     drawing_mode = st.radio(
@@ -21,7 +21,7 @@ with st.sidebar:
         label='Choose a confidence threshold',
         min_value=.5,
         max_value=.95,
-        value=.7,
+        value=.6,
         step=.05,
         )
 
@@ -50,7 +50,7 @@ def predict(image, model):
 
     # downsize image to 28 x 28
     image_bw_28 = resize(image_bw, (28, 28))
-    image_bw_28 = image_bw_28.reshape(784, -1)
+    # image_bw_28 = image_bw_28.reshape(784, -1)
 
     predicted_probs = model.predict(np.array([image_bw_28]))
     predicted_label = np.argmax(predicted_probs, axis=1)
