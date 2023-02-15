@@ -7,7 +7,7 @@ from skimage.transform import resize
 import numpy as np
 
 
-model = tf.keras.models.load_model('./predict-model/results/keras_mnist_sequential.h5')
+model = tf.keras.models.load_model('./predict-model/results/keras_mnist_linear_stack.h5')
 
 
 with st.sidebar:
