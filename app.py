@@ -7,16 +7,25 @@ from skimage.transform import resize
 import numpy as np
 
 
-model = tf.keras.models.load_model('./predict-model/results/keras_mnist.h5')
+model = tf.keras.models.load_model('./predict-model/results/keras_mnist_sequential.h5')
 
 
 with st.sidebar:
     drawing_mode = st.radio(
-        label='Drawing mode',
+        label='Choose drawing mode',
         options=["freedraw", "line", "transform"]
     )
 
-    
+    # only show prediction if probability > THRESHOLD
+    THRESHOLD = st.slider(
+        label='Choose a confidence threshold',
+        min_value=.5,
+        max_value=.95,
+        value=.7,
+        step=.05,
+        )
+
+
 col_1, col_2 = st.columns(2)
 
 
@@ -31,6 +40,8 @@ with col_1:
         drawing_mode=drawing_mode,
         key="canvas",
     )
+
+    
 
 
 def predict(image, model):
@@ -50,10 +61,14 @@ def predict(image, model):
 img_data = canvas_result.image_data
 if img_data is not None:
     with col_2:
-        if img_data.sum() > 0:
+        if not np.all(img_data == img_data[0]):
             probabilities, guess = predict(img_data, model)
             
-            st.title(f'Predicted = {guess[0]}')
+            if probabilities[0].max() >= THRESHOLD:
+                st.title(f'Predicted = {guess[0]}')    
+            else:
+                st.title(f"I'm not very sure..")
+
             st.bar_chart(
                 probabilities[0]
             )
