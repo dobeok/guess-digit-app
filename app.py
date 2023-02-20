@@ -14,17 +14,11 @@ st.set_page_config(layout="wide")
 
 
 def predict(image, model):
-    # bw only
+    # grayscale and resize to 28 x 28
     image_bw = image[:, :, 3]
-    
-    # if the model is cnn
     image_bw_28 = resize(image_bw, (28, 28))
     
-    # if the model is linear
-    # downsize image to 28 x 28
-    # image_bw_28 = image_bw_28.reshape(784, -1)
-
-    predicted_probs = model.predict(np.array([image_bw_28]))
+    predicted_probs = model.predict(np.array([image_bw_28]), verbose=0)
     predicted_label = np.argmax(predicted_probs, axis=1)
 
     return predicted_probs, predicted_label
@@ -90,8 +84,6 @@ with col_1:
         fig.update_layout(
             yaxis={
                 'title': None,
-                # 'visible': False,
-                # 'showticklabels': False,
                 'range': [0, 1]
                 },
             xaxis={
